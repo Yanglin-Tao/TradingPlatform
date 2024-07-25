@@ -10,6 +10,10 @@ pipenv install
 ```
 python manage.py runserver
 ```
+### Example API
+In tradingplatform/app/views.py, an API is defined for getting the stock price (stock_price):
+
+http://127.0.0.1:8000/app/price/ibm/
 
 ## References
 [Trading Platform Project Delierables](https://docs.google.com/document/d/1nSemyHsZdxt_cOOt12eZMfBD5qV_iyabLDchFLDIPrU/edit)
