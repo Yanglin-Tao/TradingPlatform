@@ -83,3 +83,42 @@ def login(request):
             )
     return JsonResponse({'message': 'Invalid request'}, status=400)
 
+@csrf_exempt
+def getUserProfile(request):
+    if request.method == 'GET':  
+        data = json.loads(request.body)
+        email = data['email']
+        user = User.objects.get(email=email) 
+        if user is None:
+            return JsonResponse({'message': 'Invalid credentials', 'success': False})  
+        else:
+            user_data = {
+                            'username':user.user_name,
+                            'email':email
+                        }
+            return JsonResponse(
+                {"message": "Here is the user profile",
+                'success': True,
+                'user': user_data
+                 },
+                status=status.HTTP_200_OK,
+            )
+    return JsonResponse({'message': 'Invalid request'}, status=400)
+
+@csrf_exempt  
+def deleteAccount(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        email = data['email']
+        user = User.objects.get(email=email)
+        if user is None:
+            return JsonResponse({'message': 'Invalid credentials', 'success': False})  
+        else:
+            user.delete()
+            return JsonResponse(
+                {"message": "Your account is deleted",
+                'success': True
+                 },
+                status=status.HTTP_200_OK,
+            )
+    return JsonResponse({'message': 'Invalid request'}, status=400)
