@@ -9,4 +9,6 @@ urlpatterns = [
     path('signup/',views.signup,name = 'signup'),
     path('deleteaccount/',views.deleteAccount,name = 'delete_account'),
     path('userprofile/',views.getUserProfile,name = 'user_profile'),
+    path('buy/',views.buy,name = 'buy_stock'),
+    path('sell/',views.sell,name = 'sell_stock')
 ]
