@@ -35,13 +35,13 @@ def get_stock_price_and_timestamp(symbol, api_key):
 @api_view(['GET'])
 def stock_price(request, symbol):
     if symbol not in SYMBOLS:
-        return JsonResponse({"error": "Symbol not supported"}, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({"message": "Symbol not supported"}, status=status.HTTP_400_BAD_REQUEST)
     
     data = get_stock_price_and_timestamp(symbol, API_KEY)
     if data:
         return JsonResponse(data, status=status.HTTP_200_OK)
     else:
-        return JsonResponse({"error": "Failed to fetch data"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return JsonResponse({"message": "Failed to fetch data"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @csrf_exempt
 def signup(request):
@@ -51,9 +51,9 @@ def signup(request):
         email = data['email']
         password = make_password(data['password'], salt=SALT)
         if User.objects.filter(email=email):
-            return JsonResponse({"error": "Email already registered!"}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse({"message": "Email already registered!"}, status=status.HTTP_400_BAD_REQUEST)
         if len(username) > 30:
-            return JsonResponse({"error": "Username must be under 30 charcters!!"}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse({"message": "Username must be under 30 charcters!!"}, status=status.HTTP_400_BAD_REQUEST)
         try:
             user = User(user_name=username, email=email, password=password)
             user.save()
