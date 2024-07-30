@@ -68,7 +68,10 @@ def login(request):
         data = json.loads(request.body)
         email = data['email']
         password = make_password(data['password'], salt=SALT)
-        user = User.objects.get(email=email)
+        try:
+            user = User.objects.get(email=email)
+        except:
+            return JsonResponse({'message': 'Invalid credentials', 'success': False})  
         if user is None or user.password != password:
             return JsonResponse({'message': 'Invalid credentials', 'success': False})  
         else:
