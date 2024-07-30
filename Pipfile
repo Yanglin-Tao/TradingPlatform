@@ -5,17 +5,12 @@ name = "pypi"
 
 [packages]
 django = "*"
+pytz = "*"
 psycopg2 = "*"
 psycopg2-binary = "*"
-<<<<<<< HEAD
-djangorestframework = "*"
-djangorestframework_simplejwt = "*"
-=======
-psycopg2-binary = "*"
 djangorestframework = "*"
 djangorestframework_simplejwt = "*"
 djangorestframework_simplejwt = "*"
->>>>>>> b973e6e11bb010e34c632c33e9725c18d65881d4
 django-cors-headers = "*"
 
 [dev-packages]
