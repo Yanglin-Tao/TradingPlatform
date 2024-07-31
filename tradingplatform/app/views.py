@@ -91,7 +91,7 @@ def login(request):
     return JsonResponse({'message': 'Invalid request'}, status=400)
 
 @csrf_exempt
-def getUserProfile(request):
+def get_user_profile(request):
     if request.method == 'POST':  
         data = json.loads(request.body)
         email = data['email']
@@ -113,7 +113,7 @@ def getUserProfile(request):
     return JsonResponse({'message': 'Invalid request'}, status=400)
 
 @csrf_exempt  
-def deleteAccount(request):
+def delete_account(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         email = data['email']
@@ -203,4 +203,39 @@ def sell(request):
                     return JsonResponse({'message': f'Error: {str(e)}'}, status=400)
             else:
                 return JsonResponse({'message': 'Failed to fetch stock data', 'success': False})
+    return JsonResponse({'message': 'Invalid request'}, status=400)
+
+@csrf_exempt  
+def get_order_history(request): 
+    """
+    Input request is the request after navigating to history page for a certain user
+    The request should contain the following fields:
+        - email: the email of the user
+    """
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        email = data['email']
+        orders = Order.objects.filter(user_id=email)
+        if orders is None:
+            return JsonResponse({'message': 'No Available Orders', 'success': False})  
+        else:
+            order_data = []
+            for order in orders:
+                order_data.append({
+                    'symbol': order.price.symbol,
+                    'order_operation': order.order_operation,
+                    'order_type': order.order_type,
+                    'stock_price': order.price.price,
+                    'quantity': order.quantity,
+                    'time': order.price.time.astimezone(TIMEZONE),
+                    'total_price': order.price.price * order.quantity
+                })
+            return JsonResponse(
+                {"message": f"Here is the order history for user",
+                'success': True,
+                'orders': order_data
+                 },
+                status=status.HTTP_200_OK,
+            )
+        
     return JsonResponse({'message': 'Invalid request'}, status=400)

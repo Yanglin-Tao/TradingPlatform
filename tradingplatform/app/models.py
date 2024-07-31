@@ -7,7 +7,7 @@ class User(models.Model):
     password = models.CharField()
 
 class Price(models.Model):
-    price = models.IntegerField()
+    price = models.FloatField()
     symbol = models.CharField(max_length=30)
     time = models.DateTimeField()
 
