@@ -156,7 +156,7 @@ def buy(request):
                     price.save()
                     # create and save the order
                     assert(stock_data['symbol'].upper() == stock_symbol.upper())
-                    order = Order(user=user, price=price, order_type='buy', order_operation=stock_symbol, quantity=quantity, order_time=time, stop_price=0, limit_price=0)
+                    order = Order(user=user, price=price, order_type='Limit', order_operation='buy', quantity=quantity, order_time=time, stop_price=0, limit_price=0)
                     order.save()
                     return JsonResponse({"message": "Buying Successfully!"}, status=status.HTTP_200_OK)
                 except Exception as e:
@@ -193,7 +193,7 @@ def sell(request):
                     price.save()
                     # create and save the order
                     assert(stock_data['symbol'].upper() == stock_symbol.upper())
-                    order = Order(user=user, price=price, order_type='sell', order_operation=stock_symbol, quantity=quantity, order_time=time, stop_price=0, limit_price=0)
+                    order = Order(user=user, price=price, order_type='Limit', order_operation='sell', quantity=quantity, order_time=time, stop_price=0, limit_price=0)
                     order.save()
                     return JsonResponse({"message": "Selling Successfully!"}, status=status.HTTP_200_OK)
                 except Exception as e:
