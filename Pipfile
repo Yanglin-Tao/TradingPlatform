@@ -11,6 +11,7 @@ psycopg2-binary = "*"
 djangorestframework = "*"
 djangorestframework_simplejwt = "*"
 django-cors-headers = "*"
+schedule = "*"
 
 [dev-packages]
 
