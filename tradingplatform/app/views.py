@@ -185,7 +185,7 @@ def sell(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         email = data['email']
-        quantity = data['quantity'] # TODO: check if the user has enough stock to sell?
+        quantity = data['quantity']
         stock_symbol = data['stock_symbol']
 
         user = User.objects.get(email=email)
@@ -249,7 +249,7 @@ def get_order_history(request):
 def get_price_history(request): 
     """
     Input request is the request after navigating to price history page 
-    The request should contain the following fields: (TODO: maybe no need to add this?)
+    The request should contain the following fields:
         - email: the email of the user
     """
     if request.method == 'POST':
@@ -258,7 +258,7 @@ def get_price_history(request):
             prices = Price.objects.filter(symbol=stock_symbol.upper()).order_by('-time')[:10]
             if prices is not None:
                 price_data_stock = {'labels':[], 'datasets':{}}
-                for price in prices:
+                for price in prices[::-1]:
                     price_data_stock['labels'].append(price.time.astimezone(TIMEZONE))
                     price_data_stock['datasets']['label'] = price.symbol
                     price_data_stock['datasets']['data'] = price_data_stock['datasets'].get('data', [])+[price.price]
