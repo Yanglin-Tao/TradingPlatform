@@ -4,7 +4,7 @@ import pytz
 import schedule
 import asyncio
 import time
-import threading
+from threading import Thread
 from concurrent.futures import ThreadPoolExecutor
 
 from datetime import datetime
@@ -284,18 +284,29 @@ def get_stock_price(symbol, api_key=API_KEY):
         price = Price(price=stock_data['price'], symbol=stock_data['symbol'], time=datetime.fromtimestamp(stock_data['time'], TIMEZONE))
         price.save()
     else: 
-        pass
-        # print("Failed to fetch stock data for {}".format(symbol))
+        print("Failed to fetch stock data for {}".format(symbol))
 
-# while 1: 
-#     with ThreadPoolExecutor(max_workers=4) as executor:
-#         future_to_stock = {executor.submit(get_stock_price(symbol), symbol): symbol for symbol in SYMBOLS}
-#         for future in future_to_stock:
-#             symbol = future_to_stock[future]
-#             try:
-#                 future.result()
-#             except Exception as exc:
-#                 pass
-#                 # print(f'{symbol} generated an exception: {exc}')
-#         print("-"*20)
-#         time.sleep(10)
+def fetch_and_save_stock_price(symbol):
+    try:
+        get_stock_price(symbol, API_KEY)
+    except Exception as exc:
+        print(f'{symbol} generated an exception: {exc}')
+
+def continuous_price_fetch():
+    while True:
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            futures = [executor.submit(fetch_and_save_stock_price, symbol) for symbol in SYMBOLS]
+            for future in futures:
+                try:
+                    future.result()
+                except Exception as exc:
+                    print(f'Generated an exception: {exc}')
+        print("-" * 20)
+        time.sleep(10)
+
+def start_background_task():
+    fetch_thread = Thread(target=continuous_price_fetch)
+    fetch_thread.daemon = True  
+    fetch_thread.start()
+
+start_background_task()
