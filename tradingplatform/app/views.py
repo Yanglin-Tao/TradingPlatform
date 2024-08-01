@@ -155,22 +155,14 @@ def buy(request):
         if user is None:
             return JsonResponse({'message': 'Invalid credentials', 'success': False})  
         else:
-            stock_data = get_stock_price_and_timestamp(stock_symbol, API_KEY)
-            if stock_data:
-                try:
-                    time = datetime.fromtimestamp(stock_data['time'], TIMEZONE)
-                    # create and save the stock price
-                    price = Price(price=stock_data['price'], symbol=stock_data['symbol'], time=time)
-                    price.save()
-                    # create and save the order
-                    assert(stock_data['symbol'].upper() == stock_symbol.upper())
-                    order = Order(user=user, price=price, order_type='Limit', order_operation='buy', quantity=quantity, order_time=time, stop_price=0, limit_price=0)
-                    order.save()
-                    return JsonResponse({"message": "Buying Successfully!"}, status=status.HTTP_200_OK)
-                except Exception as e:
-                    return JsonResponse({'message': f'Error: {str(e)}'}, status=400)
-            else:
-                return JsonResponse({'message': 'Failed to fetch stock data', 'success': False})
+            try:
+                price = Price.objects.filter(symbol=stock_symbol.upper()).order_by('-time').first()
+                # create and save the order
+                order = Order(user=user, price=price, order_type='Market Order', order_operation='buy', quantity=quantity, order_time=price.time, stop_price=0, limit_price=0)
+                order.save()
+                return JsonResponse({"message": "Buying Successfully!"}, status=status.HTTP_200_OK)
+            except Exception as e:
+                return JsonResponse({'message': f'Error: {str(e)}'}, status=400)
     return JsonResponse({'message': 'Invalid request'}, status=400)
 
 @csrf_exempt  
@@ -192,22 +184,14 @@ def sell(request):
         if user is None:
             return JsonResponse({'message': 'Invalid credentials', 'success': False})  
         else:
-            stock_data = get_stock_price_and_timestamp(stock_symbol, API_KEY)
-            if stock_data:
-                try:
-                    time = datetime.fromtimestamp(stock_data['time'], TIMEZONE)
-                    # create and save the stock price
-                    price = Price(price=stock_data['price'], symbol=stock_data['symbol'], time=time)
-                    price.save()
-                    # create and save the order
-                    assert(stock_data['symbol'].upper() == stock_symbol.upper())
-                    order = Order(user=user, price=price, order_type='Limit', order_operation='sell', quantity=quantity, order_time=time, stop_price=0, limit_price=0)
-                    order.save()
-                    return JsonResponse({"message": "Selling Successfully!"}, status=status.HTTP_200_OK)
-                except Exception as e:
-                    return JsonResponse({'message': f'Error: {str(e)}'}, status=400)
-            else:
-                return JsonResponse({'message': 'Failed to fetch stock data', 'success': False})
+            try:
+                price = Price.objects.filter(symbol=stock_symbol.upper()).order_by('-time').first()
+                # create and save the order
+                order = Order(user=user, price=price, order_type='Market Order', order_operation='sell', quantity=quantity, order_time=price.time, stop_price=0, limit_price=0)
+                order.save()
+                return JsonResponse({"message": "Selling Successfully!"}, status=status.HTTP_200_OK)
+            except Exception as e:
+                return JsonResponse({'message': f'Error: {str(e)}'}, status=400)
     return JsonResponse({'message': 'Invalid request'}, status=400)
 
 @csrf_exempt  
